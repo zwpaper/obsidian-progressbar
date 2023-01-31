@@ -56,12 +56,14 @@ const generateUniqueID = (idLength) => [...Array(idLength).keys()].map((elem)=>M
 
 function createProgressBar(el, bar) {
     switch (bar.kind) {
-        case "year":
-            return newYearProgressBar(el, bar);
-        case "month":
+        case "day-year":
+            return newDayYearProgressBar(el, bar);
+		case "day-month":
+			return newDayMonthProgressBar(el, bar);
+		case "month":
             return newMonthProgressBar(el, bar);
-        case "week":
-            return newWeekProgressBar(el, bar);
+        case "day-week":
+            return newDayWeekProgressBar(el, bar);
         default:
     }
 }
@@ -70,20 +72,36 @@ function daysIntoYear(date){
     return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
 }
 
-function newYearProgressBar(el, bar) {
+function newDayWeekProgressBar(el, bar) {
+    bar.max = 7;
+    bar.value = new Date().getDay() === 0 ? 7 : new Date().getDay();
+    newProgressBar(el, bar);
+}
+
+function newMonthProgressBar(el, bar) {
+    bar.max = 12;
+    bar.value = new Date().getMonth()+1;
+    newProgressBar(el, bar);
+}
+
+function newDayMonthProgressBar(el, bar) {
+	const now = new Date()
+    bar.max = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    bar.value = now.getDate();
+    newProgressBar(el, bar);
+}
+
+function newDayYearProgressBar(el, bar) {
     bar.max = new Date().getFullYear() % 4 == 0 ? 366 : 365;
     bar.value = daysIntoYear(new Date());
-    console.log(bar)
     newProgressBar(el, bar);
 }
 
 function newProgressBar(el, bar) {
-    const id = generateUniqueID(10);
     const labelName = bar.name ? bar.name : bar.kind;
-    const label = el.createEl("label", { text: labelName+': ' });
-    label.for = id;
-    const progressbar = el.createEl("progress");
-    progressbar.id = id;
+    const label = el.createEl("label", { text: labelName+"("+bar.value+"/"+bar.max+'): ' });
+
+    const progressbar = label.createEl("progress");
     progressbar.value = bar.value;
     progressbar.max = bar.max;
     if ( bar.width ) {
