@@ -1,8 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { parse } from 'yaml'
 
-// Remember to rename these classes and interfaces!
-
 interface ProgressBarSettings {
 	setting: string;
 }
@@ -15,13 +13,10 @@ export default class ProgressBar extends Plugin {
 	settings: ProgressBarSettings;
 
 	async onload() {
-		await this.loadSettings();
+		// await this.loadSettings();
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new ProgressBarSettingTab(this.app, this));
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		// this.addSettingTab(new ProgressBarSettingTab(this.app, this));
 
         this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
             const cfg = parse(source);
