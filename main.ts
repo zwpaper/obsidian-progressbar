@@ -60,6 +60,7 @@ function createProgressBar(el, bar) {
         case "day-week":
             return newDayWeekProgressBar(el, bar);
         default:
+            return newProgressBar(el, bar);
     }
 }
 
@@ -81,7 +82,7 @@ function newMonthProgressBar(el, bar) {
 
 function newDayMonthProgressBar(el, bar) {
 	const now = new Date()
-    bar.max = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    bar.max = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
     bar.value = now.getDate();
     newProgressBar(el, bar);
 }
