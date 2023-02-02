@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-progressbar",
 	"name": "ProgressBar",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
 	"description": "Obsidian ProgressBar CodeBlock",
 	"author": "Wei Zhang",
