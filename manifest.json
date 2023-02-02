@@ -1,11 +1,11 @@
 {
-	"id": "obsidian-progressbar",
+	"id": "progressbar",
 	"name": "ProgressBar",
 	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
-	"description": "Obsidian ProgressBar CodeBlock",
+	"description": "Render CodeBlock into a ProgressBar.",
 	"author": "Wei Zhang",
-	"authorUrl": "https://github.com/zwpaper/obsidian-progressbar",
+	"authorUrl": "https://github.com/zwpaper",
 	"fundingUrl": "https://github.com/zwpaper/obsidian-progressbar",
 	"isDesktopOnly": false
 }

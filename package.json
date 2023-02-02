@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-progressbar",
 	"version": "0.2.0",
-	"description": "Obsidian ProgressBar CodeBlock",
+	"description": "Render CodeBlock into a ProgressBar.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
