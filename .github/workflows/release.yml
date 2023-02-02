@@ -27,7 +27,7 @@ jobs:
           mkdir ${{ env.PLUGIN_NAME }}
           cp main.js manifest.json styles.css ${{ env.PLUGIN_NAME }}
           zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
-          cp ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}-${{ github.ref }}.zip
+          cp ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}-$(git tag --sort version:refname | tail -n 1).zip
           ls
           echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
 
@@ -41,4 +41,4 @@ jobs:
           tag: ${{ github.ref }}
           draft: false
           prerelease: false
-          artifacts: "./${{ env.PLUGIN_NAME }}-${{ github.ref }}.zip,main.js,manifest.json,styles.css"
+          artifacts: "./${{ env.PLUGIN_NAME }}-${{ steps.build.outputs.tag_name }}.zip,main.js,manifest.json,styles.css"
