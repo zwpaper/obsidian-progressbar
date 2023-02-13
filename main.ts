@@ -20,7 +20,6 @@ export default class ProgressBar extends Plugin {
 
     this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
       const cfg = parse(source);
-      console.log(cfg);
       if ( !cfg.kind && !cfg.value ) {
         newError(el, "No kind specified");
         return;
