@@ -32,13 +32,13 @@ export default class ProgressBar extends Plugin {
 
   }
 
-  async loadSettings() {
-	this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-  }
-
-  async saveSettings() {
-	await this.saveData(this.settings);
-  }
+  // async loadSettings() {
+  //   this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  // }
+  // 
+  // async saveSettings() {
+  //   await this.saveData(this.settings);
+  // }
 }
 
 function newError(el: HTMLElement, msg: string) {
@@ -103,31 +103,31 @@ function newProgressBar(el: HTMLElement, bar: any) {
   }
 }
 
-class ProgressBarSettingTab extends PluginSettingTab {
-  plugin: ProgressBar;
-
-  constructor(app: App, plugin: ProgressBar) {
-	super(app, plugin);
-	this.plugin = plugin;
-  }
-
-  display(): void {
-	const {containerEl} = this;
-
-	containerEl.empty();
-
-	containerEl.createEl('h2', {text: 'Settings for ProgressBar plugin.'});
-
-	new Setting(containerEl)
-	  .setName('TBD')
-	  .setDesc('Construction')
-	  .addText(text => text
-		.setPlaceholder('Enter your secret')
-		.setValue(this.plugin.settings.setting)
-		.onChange(async (value) => {
-		  console.log('Secret: ' + value);
-		  this.plugin.settings.setting = value;
-		  await this.plugin.saveSettings();
-		}));
-  }
-}
+// class ProgressBarSettingTab extends PluginSettingTab {
+//   plugin: ProgressBar;
+// 
+//   constructor(app: App, plugin: ProgressBar) {
+// 	super(app, plugin);
+// 	this.plugin = plugin;
+//   }
+// 
+//   display(): void {
+// 	const {containerEl} = this;
+// 
+// 	containerEl.empty();
+// 
+// 	containerEl.createEl('h2', {text: 'Settings for ProgressBar plugin.'});
+// 
+// 	new Setting(containerEl)
+// 	  .setName('TBD')
+// 	  .setDesc('Construction')
+// 	  .addText(text => text
+// 		.setPlaceholder('Enter your secret')
+// 		.setValue(this.plugin.settings.setting)
+// 		.onChange(async (value) => {
+// 		  console.log('Secret: ' + value);
+// 		  this.plugin.settings.setting = value;
+// 		  await this.plugin.saveSettings();
+// 		}));
+//   }
+// }
