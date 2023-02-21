@@ -9,10 +9,6 @@ specifiers:
   obsidian: latest
   tslib: 2.4.0
   typescript: 4.7.4
-  yaml: ^2.2.1
-
-dependencies:
-  yaml: 2.2.1
 
 devDependencies:
   '@types/node': 16.18.11
@@ -685,8 +681,3 @@ packages:
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
-
-  /yaml/2.2.1:
-    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
-    engines: {node: '>= 14'}
-    dev: false

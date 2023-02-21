@@ -1,5 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { parse } from 'yaml'
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, parseYaml } from 'obsidian';
 
 interface ProgressBarSettings {
   setting: string;
@@ -10,7 +9,7 @@ const DEFAULT_SETTINGS: ProgressBarSettings = {
 }
 
 export default class ProgressBar extends Plugin {
-  settings: ProgressBarSettings;
+  // settings: ProgressBarSettings;
 
   async onload() {
 	// await this.loadSettings();
@@ -19,7 +18,7 @@ export default class ProgressBar extends Plugin {
 	// this.addSettingTab(new ProgressBarSettingTab(this.app, this));
 
     this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
-      const cfg = parse(source);
+      const cfg = parseYaml(source);
       if ( !cfg.kind && !cfg.value ) {
         newError(el, "No kind specified");
         return;

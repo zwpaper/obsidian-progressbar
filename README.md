@@ -2,7 +2,8 @@
 
 This is a code block plugin for Obsidian (https://obsidian.md) generating a progressbar.
 
-Obsidian ProgressBar plugin can render the `progressbar` code block into a progressbar,
+Obsidian ProgressBar plugin can render the `progressbar` code block
+into a progressbar based on Time or Manually,
 which support:
 - **day-year**: a progress bar showing how many days passed in this year.
 - **day-month**: a progress bar showing how many days passed in this month.

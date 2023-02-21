@@ -3,9 +3,9 @@
 	"name": "ProgressBar",
 	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
-	"description": "Render CodeBlock into a ProgressBar.",
+	"description": "Render CodeBlock into a ProgressBar based on Time or Manually.",
 	"author": "Wei Zhang",
 	"authorUrl": "https://github.com/zwpaper",
-	"fundingUrl": "https://github.com/zwpaper/obsidian-progressbar",
+	"fundingUrl": "https://ko-fi.com/kweizh",
 	"isDesktopOnly": false
 }
