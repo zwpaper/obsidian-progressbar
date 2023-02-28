@@ -65,5 +65,5 @@ value: 10
 # Optional when specified a valid kind
 # Required when not having a kind
 # Possible format: numbers
-value: 25
+max: 25
 ```
