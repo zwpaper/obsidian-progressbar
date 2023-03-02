@@ -1,4 +1,14 @@
-# Obsidian ProgressBar
+English | [简体中文](./README.zh-CN.md)
+
+<h1 align="center">Obsidian ProgressBar</h1>
+
+<p align=center>
+<a href="https://github.com/zwpaper/obsidian-progressbar/releases/latest"><img src="https://img.shields.io/github/v/release/zwpaper/obsidian-progressbar" alt="release" /></a>
+<a href="https://github.com/zwpaper/obsidian-progressbar/actions/workflows/ci.yml"><img alt="continuous integration" src="https://github.com/zwpaper/obsidian-progressbar/actions/workflows/ci.yml/badge.svg"></a>
+<a href="https://opensource.org/licenses/Apache-2.0">
+<img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="license" />
+</a>
+</p>
 
 This is a code block plugin for Obsidian (https://obsidian.md) generating a progressbar.
 
