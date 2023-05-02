@@ -35,7 +35,7 @@ export default class ProgressBar extends Plugin {
   // async loadSettings() {
   //   this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   // }
-  // 
+  //
   // async saveSettings() {
   //   await this.saveData(this.settings);
   // }
@@ -91,9 +91,27 @@ function newDayYearProgressBar(el: HTMLElement, bar: any) {
   newProgressBar(el, bar);
 }
 
-function newProgressBar(el: HTMLElement, bar: any) {
-  const labelName = bar.name ? bar.name : bar.kind;
-  const label = el.createEl("label", { text: labelName+"("+bar.value+"/"+bar.max+'): ' });
+interface Templater {
+  max: string;
+  value: string;
+  percentage: number;
+}
+
+function applyTemplate(template, data) {
+  const pattern = /{\s*(\w+?)\s*}/g; // {property}
+  return template.replace(pattern, (_, token) => data[token] || "{"+token+"}");
+}
+
+function newProgressBar(el: HTMLElement, bar: Templater) {
+  const labelName = bar.name ? bar.name : bar.kind+"({percentage})";
+  const max = bar.max;
+  const value = bar.value;
+  const message = applyTemplate(labelName, {
+    max,
+    value,
+    percentage: Math.round(value/max*100)+"%",
+  });
+  const label = el.createEl("label", { text: message+": " });
 
   const progressbar = label.createEl("progress");
   progressbar.value = bar.value;
@@ -105,29 +123,29 @@ function newProgressBar(el: HTMLElement, bar: any) {
 
 // class ProgressBarSettingTab extends PluginSettingTab {
 //   plugin: ProgressBar;
-// 
+//
 //   constructor(app: App, plugin: ProgressBar) {
-// 	super(app, plugin);
-// 	this.plugin = plugin;
+//  super(app, plugin);
+//  this.plugin = plugin;
 //   }
-// 
+//
 //   display(): void {
-// 	const {containerEl} = this;
-// 
-// 	containerEl.empty();
-// 
-// 	containerEl.createEl('h2', {text: 'Settings for ProgressBar plugin.'});
-// 
-// 	new Setting(containerEl)
-// 	  .setName('TBD')
-// 	  .setDesc('Construction')
-// 	  .addText(text => text
-// 		.setPlaceholder('Enter your secret')
-// 		.setValue(this.plugin.settings.setting)
-// 		.onChange(async (value) => {
-// 		  console.log('Secret: ' + value);
-// 		  this.plugin.settings.setting = value;
-// 		  await this.plugin.saveSettings();
-// 		}));
+//  const {containerEl} = this;
+//
+//  containerEl.empty();
+//
+//  containerEl.createEl('h2', {text: 'Settings for ProgressBar plugin.'});
+//
+//  new Setting(containerEl)
+//    .setName('TBD')
+//    .setDesc('Construction')
+//    .addText(text => text
+//      .setPlaceholder('Enter your secret')
+//      .setValue(this.plugin.settings.setting)
+//      .onChange(async (value) => {
+//        console.log('Secret: ' + value);
+//        this.plugin.settings.setting = value;
+//        await this.plugin.saveSettings();
+//      }));
 //   }
 // }
