@@ -92,24 +92,25 @@ function newDayYearProgressBar(el: HTMLElement, bar: any) {
 }
 
 interface Templater {
+  [index: string]: string;
   max: string;
   value: string;
-  percentage: number;
+  percentage: string;
 }
 
-function applyTemplate(template, data) {
+function applyTemplate(template: string, data: Templater) {
   const pattern = /{\s*(\w+?)\s*}/g; // {property}
-  return template.replace(pattern, (_, token) => data[token] || "{"+token+"}");
+  return template.replace(pattern, (_: any, token: string) => data[token] || "{"+token+"}");
 }
 
-function newProgressBar(el: HTMLElement, bar: Templater) {
+function newProgressBar(el: HTMLElement, bar: any) {
   const labelName = bar.name ? bar.name : bar.kind+"({percentage})";
-  const max = bar.max;
-  const value = bar.value;
+  const max: string = bar.max;
+  const value: string = bar.value;
   const message = applyTemplate(labelName, {
     max,
     value,
-    percentage: Math.round(value/max*100)+"%",
+    percentage: Math.round(bar.value/bar.max*100)+"%",
   });
   const label = el.createEl("label", { text: message+": " });
 
