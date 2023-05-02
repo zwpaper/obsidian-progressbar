@@ -28,6 +28,9 @@ which support:
 Obsidian ProgressBar plugin will work when creating a `progressbar` code block,
 and use [Yaml](https://yaml.org/) to configure.
 
+the name is showing as the description before the progressbar,
+and it support templates, please refer to the [Name Templates](#name-templates).
+
 for example:
 
 ```
@@ -54,8 +57,9 @@ kind: day-year
 
 # == name ==
 # Specify the progress bar name, in front of the bar
+# support templates: max, value, percentage
 # Optional, will use kind as name if not specified
-name: day-year
+name: {percentage} to {max}
 
 # == width ==
 # Specify the progress bar width
@@ -77,3 +81,22 @@ value: 10
 # Possible format: numbers
 max: 25
 ```
+
+
+### Name Templates
+
+the `name` option for `progressbar` supports the following templates:
+- max
+- value
+- percentage
+
+it can be used in format `{max}`,
+the plugin will replace it to the real value automatically.
+
+for example, `currently is {value}, it's {percentage} to {max}`
+will produce: `currently is 123, it's 34% to 365`.
+
+the no supported template will no be changed, for example, `I am {unknown}`,
+will still stay as `I am {unknown}`.
+
+If no name specified, name will be `kind({percentage})` by default.
