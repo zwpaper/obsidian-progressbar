@@ -12,15 +12,20 @@ export default class ProgressBar extends Plugin {
   // settings: ProgressBarSettings;
 
   async onload() {
-	// await this.loadSettings();
+    // await this.loadSettings();
 
-	// This adds a settings tab so the user can configure various aspects of the plugin
-	// this.addSettingTab(new ProgressBarSettingTab(this.app, this));
+    // This adds a settings tab so the user can configure various aspects of the plugin
+    // this.addSettingTab(new ProgressBarSettingTab(this.app, this));
 
     this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
       const cfg = parseYaml(source);
-      if ( !cfg.kind && !cfg.value ) {
+      if (!cfg.kind && !cfg.value) {
         newError(el, "No kind specified");
+        return;
+      }
+
+      if (cfg.kind === "day-custom" && !cfg.min && !cfg.max) {
+        newError(el, "Must specify min and max for day-custom");
         return;
       }
 
@@ -42,10 +47,10 @@ export default class ProgressBar extends Plugin {
 }
 
 function newError(el: HTMLElement, msg: string) {
-  el.createEl("div", { text: 'ProgressBarError: '+msg });
+  el.createEl("div", { text: 'ProgressBarError: ' + msg });
 }
 
-const generateUniqueID = (idLength: number) => [...Array(idLength).keys()].map((elem)=>Math.random().toString(36).substr(2, 1)).join("")
+const generateUniqueID = (idLength: number) => [...Array(idLength).keys()].map((elem) => Math.random().toString(36).substr(2, 1)).join("")
 
 function createProgressBar(el: HTMLElement, bar: any) {
   switch (bar.kind) {
@@ -53,42 +58,59 @@ function createProgressBar(el: HTMLElement, bar: any) {
       return newDayYearProgressBar(el, bar);
     case "day-month":
       return newDayMonthProgressBar(el, bar);
-	case "month":
+    case "month":
       return newMonthProgressBar(el, bar);
     case "day-week":
       return newDayWeekProgressBar(el, bar);
+    case "day-custom":
+      return newDayCustomProgressBar(el, bar);
     default:
-      return newProgressBar(el, bar);
+      return newProgressBar(el, bar, bar);
   }
 }
 
-function daysIntoYear(date: Date){
-  return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
+function daysIntoYear(date: Date) {
+  return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
 }
 
 function newDayWeekProgressBar(el: HTMLElement, bar: any) {
   bar.max = 7;
   bar.value = new Date().getDay() === 0 ? 7 : new Date().getDay();
-  newProgressBar(el, bar);
+  newProgressBar(el, bar, bar);
 }
 
 function newMonthProgressBar(el: HTMLElement, bar: any) {
   bar.max = 12;
-  bar.value = new Date().getMonth()+1;
-  newProgressBar(el, bar);
+  bar.value = new Date().getMonth() + 1;
+  newProgressBar(el, bar, bar);
 }
 
 function newDayMonthProgressBar(el: HTMLElement, bar: any) {
   const now = new Date()
-  bar.max = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  bar.max = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   bar.value = now.getDate();
-  newProgressBar(el, bar);
+  newProgressBar(el, bar, bar);
 }
 
 function newDayYearProgressBar(el: HTMLElement, bar: any) {
   bar.max = new Date().getFullYear() % 4 == 0 ? 366 : 365;
   bar.value = daysIntoYear(new Date());
-  newProgressBar(el, bar);
+  newProgressBar(el, bar, bar);
+}
+
+// html progressbar has no min variable,
+// both max and value should minus min
+function newDayCustomProgressBar(el: HTMLElement, bar: any) {
+  let val = {
+    min: daysIntoYear(new Date(bar.min)),
+    max: daysIntoYear(new Date(bar.max)),
+    value: daysIntoYear(new Date()),
+  }
+  val.max = val.max - val.min;
+  val.value = val.value - val.min;
+
+  newProgressBar(el, bar, val);
 }
 
 interface Templater {
@@ -100,24 +122,24 @@ interface Templater {
 
 function applyTemplate(template: string, data: Templater) {
   const pattern = /{\s*(\w+?)\s*}/g; // {property}
-  return template.replace(pattern, (_: any, token: string) => data[token] || "{"+token+"}");
+  return template.replace(pattern, (_: any, token: string) => data[token] || "{" + token + "}");
 }
 
-function newProgressBar(el: HTMLElement, bar: any) {
-  const labelName = bar.name ? bar.name : bar.kind+"({percentage})";
-  const max: string = bar.max;
-  const value: string = bar.value;
+function newProgressBar(el: HTMLElement, bar: any, val: any) {
+  const labelName = bar.name ? bar.name : bar.kind + "({percentage})";
+  const value: string = (Math.floor(bar.value * 10) / 10).toString();
   const message = applyTemplate(labelName, {
-    max,
-    value,
-    percentage: Math.round(bar.value/bar.max*100)+"%",
+    min: bar.min,
+    max: bar.max,
+    value: value,
+    percentage: Math.round(val.value / val.max * 100) + "%",
   });
-  const label = el.createEl("label", { text: message+": " });
+  const label = el.createEl("label", { text: message + ": " });
 
   const progressbar = label.createEl("progress");
-  progressbar.value = bar.value;
-  progressbar.max = bar.max;
-  if ( bar.width ) {
+  progressbar.value = val.value;
+  progressbar.max = val.max;
+  if (bar.width) {
     progressbar.style.width = bar.width;
   }
 }

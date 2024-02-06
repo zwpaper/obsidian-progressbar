@@ -18,6 +18,7 @@ which support:
 - **day-year**: a progress bar showing how many days passed in this year.
 - **day-month**: a progress bar showing how many days passed in this month.
 - **day-week**: a progress bar showing how many days passed in this week.
+- **day-custom**: a progress bar showing how many days passed in custom start and end.
 - **month**: a progress bar showing how many months passed in this year.
 - **manual**: a progress bar specified by user
 
@@ -51,15 +52,25 @@ This is the example configuration obsidian progressbar support with some remarks
 ``` yaml
 # == kind ==
 # Required when specifying a time based progress bar
+#
 # Optional if manually specifying value
-# Possible values: day-year, day-month, day-week, month
+#
+# Possible values:
+#   day-year:
+#   day-month:
+#   day-week:
+#   month:
+#   day-custom: min, and max is required, both min and max should in format: YYYY-MM-DD
 kind: day-year
 
 # == name ==
 # Specify the progress bar name, in front of the bar
 # support templates: max, value, percentage
+#
+# quote is recommanded if templates are used
+#
 # Optional, will use kind as name if not specified
-name: {percentage} to {max}
+name: name: "{percentage} from {min} to {max}"
 
 # == width ==
 # Specify the progress bar width
@@ -74,12 +85,27 @@ width: 50%
 # Possible format: numbers
 value: 10
 
+# == min ==
+# Specify the progress bar max value
+#
+# Optional when specified a valid kind
+# Only Required when kind is day-custom
+#
+# Possible format:
+#   day-custom: YYYY-MM-DD
+#   others: number
+max: 2024-02-01
+
 # == max ==
 # Specify the progress bar max value
+#
 # Optional when specified a valid kind
 # Required when not having a kind
+#
 # Possible format: numbers
-max: 25
+#   day-custom: YYYY-MM-DD
+#   others: number
+max: 2024-04-30
 ```
 
 
