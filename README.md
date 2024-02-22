@@ -45,7 +45,7 @@ will generate:
 
 ![this year](./images/this-year.jpg)
 
-### supported configurations
+### Supported configurations
 
 This is the example configuration obsidian progressbar support with some remarks
 
@@ -70,7 +70,7 @@ kind: day-year
 # quote is recommanded if templates are used
 #
 # Optional, will use kind as name if not specified
-name: name: "{percentage} from {min} to {max}"
+name: "{percentage} from {min} to {max}"
 
 # == width ==
 # Specify the progress bar width
@@ -94,7 +94,7 @@ value: 10
 # Possible format:
 #   day-custom: YYYY-MM-DD
 #   others: number
-max: 2024-02-01
+min: 2024-02-01
 
 # == max ==
 # Specify the progress bar max value
@@ -106,6 +106,25 @@ max: 2024-02-01
 #   day-custom: YYYY-MM-DD
 #   others: number
 max: 2024-04-30
+
+# == buttons ==
+# Specify whether you wish to show the buttons to +1 or -1 the current value
+#
+# Requires an id
+# Can only be used with kind manual/others or no kind
+#
+# Possible format: boolean (true or false)
+buttons: true
+
+# == id ==
+# Specify the id for a progressbar. 
+# Multiple progressbar throughout the same document will be synced for buttons
+#
+# Optional when buttons are turned off
+# Required when buttons are turned on
+#
+# Possible format: numbers, text
+id: homework-progressbar
 ```
 
 
@@ -126,3 +145,41 @@ the no supported template will no be changed, for example, `I am {unknown}`,
 will still stay as `I am {unknown}`.
 
 If no name specified, name will be `kind({percentage})` by default.
+
+### Using `id` and `buttons` together
+The `buttons` option is supposed to be used with the `id` options where the `id` option can be used anywhere but will have no practical use without the buttons, It will be the same as not having and id.
+
+`id` can be used to have multiple progressbar throughout the same document to represent the same quantity. Two progressbar having the same id will be updated together whenever one is updated **using the `buttons`**.
+
+The progressbars will not be synced automatically without the button's click. The auto syncing between progressbars with same id can be implemented in future releases.
+
+If the written `value` by the user differ between different progressbar with the same id, then the value of the progressbar from which the buttons are clicked will be updated in all of the applicable.
+
+example:
+These will have the same id, synced together on button clicks, but notice that we can have different names(along with the usage of templates).
+```
+    ```progressbar
+    id: test <-- an id assigned as "test"
+    kind: manual
+    name: "manual with buttons 1 {max}" <-- Notice the name
+    buttons: true
+    value: 5
+    max: 10
+    ```
+
+
+    ```progressbar
+    id: test <-- The same id used in a different place
+    kind: manual
+    
+    # Notice that progressbar with same id can still be used with different names
+    name: manual with buttons 2 <-- Notice the name here
+
+    buttons: true
+    value: 5
+    max: 10
+    ```
+```
+will generate:
+
+![alt text](./images/Manual%20with%20buttons.png)
