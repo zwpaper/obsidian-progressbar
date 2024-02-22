@@ -1,4 +1,5 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, parseYaml } from 'obsidian';
+import { App, Editor, MarkdownView, Menu, MenuItem, Modal, Notice, Plugin, PluginSettingTab, Setting, Vault, parseYaml, stringifyYaml } from 'obsidian';
+import 'obsidian';
 
 interface ProgressBarSettings {
   setting: string;
@@ -10,15 +11,22 @@ const DEFAULT_SETTINGS: ProgressBarSettings = {
 
 export default class ProgressBar extends Plugin {
   // settings: ProgressBarSettings;
-
+  
   async onload() {
     // await this.loadSettings();
-
     // This adds a settings tab so the user can configure various aspects of the plugin
     // this.addSettingTab(new ProgressBarSettingTab(this.app, this));
-
+    
     this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
-      const cfg = parseYaml(source);
+      let cfg;
+      try {
+        cfg = parseYaml(source);
+      } catch (e) {
+        console.log(e);
+        newError(el, "Cannot parse the YAML Format");
+        return;
+      }      
+      
       if (!cfg.kind && !cfg.value) {
         newError(el, "No kind specified");
         return;
@@ -29,7 +37,17 @@ export default class ProgressBar extends Plugin {
         return;
       }
 
-      createProgressBar(el, cfg);
+      if ((cfg.kind && !(cfg.kind==="manual" || cfg.kind=== "other")) && cfg.buttons){
+        newError(el, "Can only use buttons with kind: manual/other");
+        return;
+      }
+
+      if (cfg.buttons && !cfg.id){
+        newError(el, "Can not use buttons without id");
+        return;
+      }
+
+      createProgressBar(el, cfg, source);
     });
   }
 
@@ -52,7 +70,7 @@ function newError(el: HTMLElement, msg: string) {
 
 const generateUniqueID = (idLength: number) => [...Array(idLength).keys()].map((elem) => Math.random().toString(36).substr(2, 1)).join("")
 
-function createProgressBar(el: HTMLElement, bar: any) {
+function createProgressBar(el: HTMLElement, bar: any, source: string) {
   switch (bar.kind) {
     case "day-year":
       return newDayYearProgressBar(el, bar);
@@ -133,15 +151,72 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
     max: bar.max,
     value: value,
     percentage: Math.round(val.value / val.max * 100) + "%",
-  });
+  });1
   const label = el.createEl("label", { text: message + ": " });
-
-  const progressbar = label.createEl("progress");
+  
+  if (bar.buttons) {
+    const minus=el.createEl("button", { text: "-" });
+    minus.style.fontSize='larger'
+    minus.addEventListener("click", () => {
+      decrement(bar);
+    })
+  }
+  const progressbar = el.createEl("progress");
   progressbar.value = val.value;
   progressbar.max = val.max;
   if (bar.width) {
     progressbar.style.width = bar.width;
   }
+  if (bar.buttons) {
+    const plus=el.createEl("button", { text: "+" });
+    plus.style.fontSize='larger'
+    plus.addEventListener("click", () => {
+      console.log("hi");
+      increment(bar);
+    })
+  }
+  el.style.padding="1px"
+  el.style.display = "flex";
+  el.style.alignItems = "center";
+  el.style.gap = "10px";
+}
+
+function increment(blockTextYAML: any){
+  if (blockTextYAML.value==blockTextYAML.max) {return;}
+  const file = this.app.workspace.getActiveFile();
+      if (!file) {}
+       else {
+        let doneOnce=false;
+        this.app.vault.process(file, (data: string) => {
+          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#"]*\`{3}`, "g")
+          return data.replace(pattern, (source: String)=>{
+            if (!doneOnce) {
+              blockTextYAML.value=blockTextYAML.value+1;
+              doneOnce=true;
+            }
+            return source.replace(/value: [0-9]*/g, `value: ${blockTextYAML.value}`)
+          })
+        })
+      }
+}
+
+function decrement(blockTextYAML: any){
+  if (blockTextYAML.value==0) {return;}
+  const file = this.app.workspace.getActiveFile();
+      if (!file) {}
+       else {
+        let doneOnce=false;
+        this.app.vault.process(file, (data: string) => {
+          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#"]*\`{3}`, "g")
+          return data.replace(pattern, (source: String)=>{
+            if (!doneOnce) {
+              blockTextYAML.value=blockTextYAML.value-1;
+              doneOnce=true;
+            }
+            return source.replace(/value: [0-9]*/g, `value: ${blockTextYAML.value}`)
+          })
+        })
+      }
 }
 
 // class ProgressBarSettingTab extends PluginSettingTab {
