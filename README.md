@@ -107,14 +107,14 @@ min: 2024-02-01
 #   others: number
 max: 2024-04-30
 
-# == buttons ==
+# == button ==
 # Specify whether you wish to show the buttons to +1 or -1 the current value
 #
 # Requires an id
 # Can only be used with kind manual/others or no kind
 #
 # Possible format: boolean (true or false)
-buttons: true
+button: true
 
 # == id ==
 # Specify the id for a progressbar. 
@@ -146,10 +146,10 @@ will still stay as `I am {unknown}`.
 
 If no name specified, name will be `kind({percentage})` by default.
 
-### Using `id` and `buttons` together
-The `buttons` option is supposed to be used with the `id` options where the `id` option can be used anywhere but will have no practical use without the buttons, It will be the same as not having and id.
+### Using `id` and `button` together
+The `button` option is supposed to be used with the `id` options where the `id` option can be used anywhere but will have no practical use without the buttons, It will be the same as not having and id.
 
-`id` can be used to have multiple progressbar throughout the same document to represent the same quantity. Two progressbar having the same id will be updated together whenever one is updated **using the `buttons`**.
+`id` can be used to have multiple progressbar throughout the same document to represent the same quantity. Two progressbar having the same id will be updated together whenever one is updated **using the `button`**.
 
 The progressbars will not be synced automatically without the button's click. The auto syncing between progressbars with same id can be implemented in future releases.
 
@@ -162,7 +162,7 @@ These will have the same id, synced together on button clicks, but notice that w
     id: test <-- an id assigned as "test"
     kind: manual
     name: "manual with buttons 1 {max}" <-- Notice the name
-    buttons: true
+    button: true
     value: 5
     max: 10
     ```
@@ -175,7 +175,7 @@ These will have the same id, synced together on button clicks, but notice that w
     # Notice that progressbar with same id can still be used with different names
     name: manual with buttons 2 <-- Notice the name here
 
-    buttons: true
+    button: true
     value: 5
     max: 10
     ```
