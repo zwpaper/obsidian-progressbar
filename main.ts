@@ -8,7 +8,6 @@ interface ProgressBarSettings {
 const DEFAULT_SETTINGS: ProgressBarSettings = {
   setting: 'default'
 }
-
 export default class ProgressBar extends Plugin {
   // settings: ProgressBarSettings;
   
@@ -16,13 +15,11 @@ export default class ProgressBar extends Plugin {
     // await this.loadSettings();
     // This adds a settings tab so the user can configure various aspects of the plugin
     // this.addSettingTab(new ProgressBarSettingTab(this.app, this));
-    
     this.registerMarkdownCodeBlockProcessor("progressbar", (source, el, ctx) => {
       let cfg;
       try {
         cfg = parseYaml(source);
       } catch (e) {
-        console.log(e);
         newError(el, "Cannot parse the YAML Format");
         return;
       }      
@@ -37,13 +34,13 @@ export default class ProgressBar extends Plugin {
         return;
       }
 
-      if ((cfg.kind && !(cfg.kind==="manual" || cfg.kind=== "other")) && cfg.buttons){
-        newError(el, "Can only use buttons with kind: manual/other");
+      if ((cfg.kind && !(cfg.kind==="manual" || cfg.kind=== "other")) && cfg.button){
+        newError(el, "Can only use button with kind: manual/other");
         return;
       }
 
-      if (cfg.buttons && !cfg.id){
-        newError(el, "Can not use buttons without id");
+      if (cfg.button && !cfg.id){
+        newError(el, "Can not use button without id");
         return;
       }
 
@@ -151,10 +148,10 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
     max: bar.max,
     value: value,
     percentage: Math.round(val.value / val.max * 100) + "%",
-  });1
+  });
   const label = el.createEl("label", { text: message + ": " });
   
-  if (bar.buttons) {
+  if (bar.button) {
     const minus=el.createEl("button", { text: "-" });
     minus.style.fontSize='larger'
     minus.addEventListener("click", () => {
@@ -167,11 +164,10 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
   if (bar.width) {
     progressbar.style.width = bar.width;
   }
-  if (bar.buttons) {
+  if (bar.button) {
     const plus=el.createEl("button", { text: "+" });
     plus.style.fontSize='larger'
     plus.addEventListener("click", () => {
-      console.log("hi");
       increment(bar);
     })
   }
@@ -182,38 +178,36 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
 }
 
 function increment(blockTextYAML: any){
-  if (blockTextYAML.value==blockTextYAML.max) {return;}
+  if (blockTextYAML.value>=blockTextYAML.max) {return;}
   const file = this.app.workspace.getActiveFile();
-      if (!file) {}
-       else {
+      if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value+1;
               doneOnce=true;
             }
-            return source.replace(/value: [0-9]*/g, `value: ${blockTextYAML.value}`)
+            return source.replace(/value: [0-9\-]*/g, `value: ${blockTextYAML.value}`)
           })
         })
       }
 }
 
 function decrement(blockTextYAML: any){
-  if (blockTextYAML.value==0) {return;}
+  if (blockTextYAML.value<=(blockTextYAML.min?blockTextYAML.min:0)) {return;}
   const file = this.app.workspace.getActiveFile();
-      if (!file) {}
-       else {
+    if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value-1;
               doneOnce=true;
             }
-            return source.replace(/value: [0-9]*/g, `value: ${blockTextYAML.value}`)
+            return source.replace(/value: [0-9\-]*/g, `value: ${blockTextYAML.value}`)
           })
         })
       }
