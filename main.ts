@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS: ProgressBarSettings = {
 }
 export default class ProgressBar extends Plugin {
   // settings: ProgressBarSettings;
-  
+
   async onload() {
     // await this.loadSettings();
     // This adds a settings tab so the user can configure various aspects of the plugin
@@ -22,8 +22,8 @@ export default class ProgressBar extends Plugin {
       } catch (e) {
         newError(el, "Cannot parse the YAML Format");
         return;
-      }      
-      
+      }
+
       if (!cfg.kind && !cfg.value) {
         newError(el, "No kind specified");
         return;
@@ -141,7 +141,7 @@ function applyTemplate(template: string, data: Templater) {
 }
 
 function newProgressBar(el: HTMLElement, bar: any, val: any) {
-  const labelName = bar.name ? bar.name : bar.kind + "({percentage})";
+  const labelName = bar.name ? bar.name : bar.kind + " ({percentage})";
   const value: string = (Math.floor(bar.value * 10) / 10).toString();
   const message = applyTemplate(labelName, {
     min: bar.min,
@@ -150,7 +150,7 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
     percentage: Math.round(val.value / val.max * 100) + "%",
   });
   const label = el.createEl("label", { text: message + ": " });
-  
+
   if (bar.button) {
     const minus=el.createEl("button", { text: "-" });
     minus.style.fontSize='larger'
