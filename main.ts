@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS: ProgressBarSettings = {
 }
 export default class ProgressBar extends Plugin {
   // settings: ProgressBarSettings;
-  
+
   async onload() {
     // await this.loadSettings();
     // This adds a settings tab so the user can configure various aspects of the plugin
@@ -22,8 +22,8 @@ export default class ProgressBar extends Plugin {
       } catch (e) {
         newError(el, "Cannot parse the YAML Format");
         return;
-      }      
-      
+      }
+
       if (!cfg.kind && !cfg.value) {
         newError(el, "No kind specified");
         return;
@@ -150,7 +150,7 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
     percentage: Math.round(val.value / val.max * 100) + "%",
   });
   const label = el.createEl("label", { text: message + ": " });
-  
+
   if (bar.button) {
     const minus=el.createEl("button", { text: "-" });
     minus.style.fontSize='larger'
@@ -183,7 +183,7 @@ function increment(blockTextYAML: any){
       if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value+1;
@@ -201,7 +201,7 @@ function decrement(blockTextYAML: any){
     if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value-1;
