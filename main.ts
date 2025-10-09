@@ -183,7 +183,7 @@ function increment(blockTextYAML: any){
       if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value+1;
@@ -201,7 +201,7 @@ function decrement(blockTextYAML: any){
     if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[a-zA-Z0-9\\s:{}#\\-"]*id:[\\s]${blockTextYAML.id}[a-zA-Z0-9\\s:{}#\\-"]*\`{3}`, "g")
+          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value-1;
