@@ -118,11 +118,11 @@ function newDayYearProgressBar(el: HTMLElement, bar: any) {
 // both max and value should minus min
 function newDayCustomProgressBar(el: HTMLElement, bar: any) {
   let val = {
-    min: daysIntoYear(new Date(bar.min)),
-    max: daysIntoYear(new Date(bar.max)),
-    value: daysIntoYear(new Date()),
+    min: daysIntoYear(new Date(new Date(bar.min).getTime())),
+    max: daysIntoYear(new Date(new Date(bar.max).getTime())),
+    value: daysIntoYear(new Date(new Date())),
   }
-  val.max = val.max - val.min;
+  val.max = Math.max(val.max - val.min, 1);
   val.value = val.value - val.min;
 
   newProgressBar(el, bar, val);
