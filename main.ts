@@ -177,13 +177,21 @@ function newProgressBar(el: HTMLElement, bar: any, val: any) {
   el.style.gap = "10px";
 }
 
+// Matches only the progressbar block whose id is exactly `id`:
+// [^`] keeps the match inside a single code block, and the id must end the line,
+// so `id: progress` does not match `id: progress2`.
+function blockPattern(id: any) {
+  const escapedId = String(id).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\`{3}progressbar[^\`]*?id:[ \\t]*${escapedId}[ \\t]*\\r?\\n[^\`]*?\`{3}`, "g");
+}
+
 function increment(blockTextYAML: any){
   if (blockTextYAML.value>=blockTextYAML.max) {return;}
   const file = this.app.workspace.getActiveFile();
       if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
+          const pattern=blockPattern(blockTextYAML.id)
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value+1;
@@ -201,7 +209,7 @@ function decrement(blockTextYAML: any){
     if (file) {
         let doneOnce=false;
         this.app.vault.process(file, (data: string) => {
-          const pattern=new RegExp(`\`{3}progressbar[\\s\\S]*?id:[\\s]*${blockTextYAML.id}[\\s\\S]*?\`{3}`, "g")
+          const pattern=blockPattern(blockTextYAML.id)
           return data.replace(pattern, (source: String)=>{
             if (!doneOnce) {
               blockTextYAML.value=blockTextYAML.value-1;
